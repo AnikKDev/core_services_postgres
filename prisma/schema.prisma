@@ -1,0 +1,122 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// enums
+enum Gender {
+  Male
+  Female
+  Others
+}
+
+// semester model
+model AcademicSemester {
+  id         String    @id @default(uuid())
+  year       Int
+  title      String
+  code       String
+  startMonth String
+  endMonth   String
+  // there will be many students under one academic semester !one to many
+  students   Student[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("academic_semesters")
+}
+
+// faculty model
+model AcademicFaculty {
+  id                  String               @id @default(uuid())
+  title               String
+  // there might be multiple departments under one faculty !one to many
+  academicDepartments AcademicDepartment[]
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  // one department can have multiple students
+  students            Student[]
+  // one department can have multiple facculties
+  faculties           Faculty[]
+
+  @@map("academic_faculty")
+}
+
+// department model
+model AcademicDepartment {
+  id                String          @id @default(uuid())
+  title             String
+  academicFacultyId String
+  academicFaculty   AcademicFaculty @relation(fields: [academicFacultyId], references: [id])
+  // many students can be there under one department
+  students          Student[]
+  // one department can have multiple facculties
+  faculties         Faculty[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("academic_department")
+}
+
+// student model
+model Student {
+  id           String @id @default(uuid())
+  studentId    String
+  firstName    String
+  middleName   String
+  lastName     String
+  profileImage String
+  email        String
+  contactNo    String
+  gender       Gender
+  bloodGroup   String
+
+  academicSemesterId String
+  academicSemester   AcademicSemester @relation(fields: [academicSemesterId], references: [id])
+
+  academicDepartmentId String
+  academicDepartment   AcademicDepartment @relation(fields: [academicDepartmentId], references: [id])
+
+  academicFacultyId String
+  academicFaculty   AcademicFaculty @relation(fields: [academicFacultyId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("students")
+}
+
+// faculty model
+model Faculty {
+  id           String @id @default(uuid())
+  facultytId   String
+  firstName    String
+  middleName   String
+  lastName     String
+  profileImage String
+  email        String
+  contactNo    Int
+  gender       Gender
+  bloodGroup   String
+  designation  String
+
+  academicDepartmentId String
+  academicDepartment   AcademicDepartment @relation(fields: [academicDepartmentId], references: [id])
+
+  academicFacultyId String
+  academicFaculty   AcademicFaculty @relation(fields: [academicFacultyId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("faculties")
+}
