@@ -5,7 +5,7 @@ type IOptions = {
   sortOrder?: string;
 };
 
-type IOptionsResult = {
+export type IOptionsResult = {
   page: number;
   limit: number;
   skip: number;
