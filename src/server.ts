@@ -4,7 +4,9 @@ import app from './app';
 import config from './config';
 import { errorlogger, logger } from './shared/logger';
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  errorFormat: 'pretty',
+});
 
 async function bootstrap() {
   const server: Server = app.listen(config.port, () => {
