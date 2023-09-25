@@ -8,6 +8,7 @@ import sendResponse from '../../../shared/sendResponse';
 import { semesterFilterableItems } from './academicSemester.constant';
 import {
   createAcademicSemesterService,
+  getAcademicSemesterById,
   getAcademicSemesters,
 } from './academicSemester.service';
 
@@ -36,6 +37,18 @@ export const getAcademicSemestersController = catchAsync(
       message: 'Academic Semester found successfully',
       meta: result.meta,
       data: result.data,
+    });
+  }
+);
+
+export const getAcademicSemesterByIdController = catchAsync(
+  async (req: Request, res: Response) => {
+    const retult = await getAcademicSemesterById(req.params.id);
+    sendResponse<AcademicSemester>(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: 'Academic Semester got successfully',
+      data: retult,
     });
   }
 );

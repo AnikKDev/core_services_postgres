@@ -74,3 +74,14 @@ export const getAcademicSemesters = async (
     data: result,
   };
 };
+
+export const getAcademicSemesterById = async (
+  id: string
+): Promise<AcademicSemester | null> => {
+  const result = await prisma.academicSemester.findUnique({
+    where: {
+      id: id,
+    },
+  });
+  return result;
+};
