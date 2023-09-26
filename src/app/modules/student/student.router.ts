@@ -4,6 +4,11 @@ import { StudentController } from './student.controller';
 import { StudentValidation } from './student.validation';
 
 const router = express.Router();
+router.post(
+  '/',
+  validateRequest(StudentValidation.create),
+  StudentController.insertIntoDB
+);
 
 router.get('/', StudentController.getAllFromDB);
 
@@ -13,11 +18,6 @@ router.patch(
   validateRequest(StudentValidation.update),
   StudentController.updatedIntoDB
 );
-
-router.post(
-  '/',
-  validateRequest(StudentValidation.create),
-  StudentController.insertIntoDB
-);
+router.delete('/:id', StudentController.deleteFromDB);
 
 export const studentRoutes = router;
