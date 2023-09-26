@@ -1,12 +1,18 @@
-import { Router } from 'express';
+import express from 'express';
 import validateRequest from '../../middlewares/validateRequest';
-import { createFacultyController } from './faculty.controller';
-import { createFacultyValidation } from './faculty.validation';
+import { FacultyController } from './faculty.controller';
+import { FacultyValidation } from './faculty.validation';
 
-const router = Router();
+const router = express.Router();
+
+router.get('/', FacultyController.getAllFromDB);
+
+router.get('/:id', FacultyController.getByIdFromDB);
+
 router.post(
-  '/create-faculty',
-  validateRequest(createFacultyValidation),
-  createFacultyController
+  '/',
+  validateRequest(FacultyValidation.create),
+  FacultyController.insertIntoDB
 );
-export default router;
+
+export const facultyRouter = router;

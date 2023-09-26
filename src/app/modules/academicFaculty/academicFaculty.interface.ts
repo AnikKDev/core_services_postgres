@@ -1,3 +1,3 @@
-export type IAcademicFacultyFilterType = {
+export type IAcademicFacultyFilterRequest = {
   searchTerm?: string;
 };
