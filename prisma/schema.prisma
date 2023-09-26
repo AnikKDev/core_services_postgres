@@ -11,10 +11,10 @@ datasource db {
 }
 
 // enums
-enum Gender {
-  Male
-  Female
-  Others
+enum gender {
+  male
+  female
+  others
 }
 
 // semester model
@@ -77,7 +77,7 @@ model Student {
   profileImage String
   email        String
   contactNo    String
-  gender       Gender
+  gender       gender
   bloodGroup   String
 
   academicSemesterId String
@@ -98,14 +98,14 @@ model Student {
 // faculty model
 model Faculty {
   id           String @id @default(uuid())
-  facultytId   String
+  facultyId    String
   firstName    String
   middleName   String
   lastName     String
   profileImage String
   email        String
   contactNo    Int
-  gender       Gender
+  gender       gender
   bloodGroup   String
   designation  String
 
