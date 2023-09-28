@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Course } from '@prisma/client';
+import { Course, CourseFaculty } from '@prisma/client';
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiError';
 import prisma from '../../../server';
@@ -219,9 +219,56 @@ const updateOneIntoDB = async (
   return responseData;
 };
 
+const assignFaculties = async (
+  id: string,
+  data: string[]
+): Promise<CourseFaculty[]> => {
+  await prisma.courseFaculty.createMany({
+    data: data.map((facultyId: string) => ({
+      courseId: id,
+      facultyId: facultyId,
+    })),
+  });
+  const assignFacultiesData = await prisma.courseFaculty.findMany({
+    where: {
+      courseId: id,
+    },
+    include: {
+      facutly: true,
+    },
+  });
+  return assignFacultiesData;
+};
+
+export const removeFaculties = async (
+  id: string,
+  data: string[]
+): Promise<CourseFaculty[] | null> => {
+  await prisma.courseFaculty.deleteMany({
+    where: {
+      courseId: id,
+      facultyId: {
+        in: data,
+      },
+    },
+  });
+  const assignFacultiesData = await prisma.courseFaculty.findMany({
+    where: {
+      courseId: id,
+    },
+    include: {
+      facutly: true,
+    },
+  });
+  return assignFacultiesData;
+};
+
 export const CourseService = {
   insertIntoDB,
   getByIdFromDB,
   deleteByIdFromDB,
   updateOneIntoDB,
+
+  assignFaculties,
+  removeFaculties,
 };

@@ -11,12 +11,12 @@ const myFormat = printf(({ level, message, label, timestamp }) => {
   const hour = date.getHours();
   const minutes = date.getMinutes();
   const seconds = date.getSeconds();
-  return `${date.toDateString()} ${hour}:${minutes}:${seconds} } [${label}] ${level}: ${message}`;
+  return `${date.toDateString()} ${hour}:${minutes}:${seconds} [${label}] ${level}: ${message}`;
 });
 
 const logger = createLogger({
   level: 'info',
-  format: combine(label({ label: 'PH' }), timestamp(), myFormat),
+  format: combine(label({ label: 'SERVER' }), timestamp(), myFormat),
   transports: [
     new transports.Console(),
     new DailyRotateFile({
@@ -37,7 +37,7 @@ const logger = createLogger({
 
 const errorlogger = createLogger({
   level: 'error',
-  format: combine(label({ label: 'PH' }), timestamp(), myFormat),
+  format: combine(label({ label: 'SERVER' }), timestamp(), myFormat),
   transports: [
     new transports.Console(),
     new DailyRotateFile({
@@ -56,4 +56,4 @@ const errorlogger = createLogger({
   ],
 });
 
-export { logger, errorlogger };
+export { errorlogger, logger };

@@ -20,7 +20,7 @@ const create = z.object({
     email: z.string({
       required_error: 'Email is required',
     }),
-    contactNo: z.string({
+    contactNo: z.number({
       required_error: 'Contact no is required',
     }),
     gender: z.string({
@@ -49,7 +49,7 @@ const update = z.object({
     middleName: z.string().optional(),
     profileImage: z.string().optional(),
     email: z.string().optional(),
-    contactNo: z.string().optional(),
+    contactNo: z.number().optional(),
     gender: z.string().optional(),
     bloodGroup: z.string().optional(),
     designation: z.string().optional(),
