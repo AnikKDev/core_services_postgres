@@ -9,6 +9,9 @@ const router = express.Router();
 
 router.get('/', FacultyController.getAllFromDB);
 
+router.post('/:id/assign-courses', FacultyController.assignCourses);
+router.delete('/:id/remove-courses', FacultyController.removeCourses);
+
 router.get('/:id', FacultyController.getByIdFromDB);
 
 router.post(
