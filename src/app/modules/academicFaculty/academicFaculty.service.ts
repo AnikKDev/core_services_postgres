@@ -3,7 +3,7 @@ import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../server';
-import { academicFacultySearchableFields } from './academicFaculty.constant';
+import { academicFacultySearchableFields } from './academicFaculty.constants';
 import { IAcademicFacultyFilterRequest } from './academicFaculty.interface';
 
 const insertIntoDB = async (
@@ -96,9 +96,19 @@ const updateOneInDB = async (
   return result;
 };
 
+const deleteByIdFromDB = async (id: string): Promise<AcademicFaculty> => {
+  const result = await prisma.academicFaculty.delete({
+    where: {
+      id,
+    },
+  });
+  return result;
+};
+
 export const AcademicFacultyService = {
   insertIntoDB,
   getAllFromDB,
-  updateOneInDB,
   getByIdFromDB,
+  updateOneInDB,
+  deleteByIdFromDB,
 };

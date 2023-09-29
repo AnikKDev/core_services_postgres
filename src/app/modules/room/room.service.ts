@@ -1,11 +1,16 @@
-/* eslint-disable no-unused-vars */
 import { Prisma, Room } from '@prisma/client';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../server';
+import {
+  roomRelationalFields,
+  roomRelationalFieldsMapper,
+  roomSearchableFields,
+} from './room.constants';
+import { IRoomFilterRequest } from './room.interface';
 
-const insertIntoDB = async (data: Room): Promise<Room | null> => {
+const insertIntoDB = async (data: Room): Promise<Room> => {
   const result = await prisma.room.create({
     data,
     include: {
@@ -16,7 +21,7 @@ const insertIntoDB = async (data: Room): Promise<Room | null> => {
 };
 
 const getAllFromDB = async (
-  filters: any,
+  filters: IRoomFilterRequest,
   options: IPaginationOptions
 ): Promise<IGenericResponse<Room[]>> => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options);
@@ -26,7 +31,7 @@ const getAllFromDB = async (
 
   if (searchTerm) {
     andConditions.push({
-      OR: ['floor', 'roomNumber'].map(field => ({
+      OR: roomSearchableFields.map(field => ({
         [field]: {
           contains: searchTerm,
           mode: 'insensitive',
@@ -35,25 +40,25 @@ const getAllFromDB = async (
     });
   }
 
-  /* if (Object.keys(filterData).length > 0) {
-      andConditions.push({
-          AND: Object.keys(filterData).map((key) => {
-              if ([].includes(key)) {
-                  return {
-                      [roomRelationalFieldsMapper[key]]: {
-                          id: (filterData as any)[key]
-                      }
-                  };
-              } else {
-                  return {
-                      [key]: {
-                          equals: (filterData as any)[key]
-                      }
-                  };
-              }
-          })
-      });
-  } */
+  if (Object.keys(filterData).length > 0) {
+    andConditions.push({
+      AND: Object.keys(filterData).map(key => {
+        if (roomRelationalFields.includes(key)) {
+          return {
+            [roomRelationalFieldsMapper[key]]: {
+              id: (filterData as any)[key],
+            },
+          };
+        } else {
+          return {
+            [key]: {
+              equals: (filterData as any)[key],
+            },
+          };
+        }
+      }),
+    });
+  }
 
   const whereConditions: Prisma.RoomWhereInput =
     andConditions.length > 0 ? { AND: andConditions } : {};
@@ -126,7 +131,7 @@ const deleteByIdFromDB = async (id: string): Promise<Room> => {
   return result;
 };
 
-export const roomService = {
+export const RoomService = {
   insertIntoDB,
   getAllFromDB,
   getByIdFromDB,

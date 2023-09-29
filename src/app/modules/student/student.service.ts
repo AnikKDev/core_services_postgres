@@ -2,13 +2,12 @@ import { Prisma, Student } from '@prisma/client';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
-
 import prisma from '../../../server';
 import {
   studentRelationalFields,
   studentRelationalFieldsMapper,
   studentSearchableFields,
-} from './student.constant';
+} from './student.constants';
 import { IStudentFilterRequest } from './student.interface';
 
 const insertIntoDB = async (data: Student): Promise<Student> => {
@@ -113,17 +112,22 @@ const getByIdFromDB = async (id: string): Promise<Student | null> => {
 const updateIntoDB = async (
   id: string,
   payload: Partial<Student>
-): Promise<Student | null> => {
+): Promise<Student> => {
   const result = await prisma.student.update({
     where: {
       id,
     },
     data: payload,
+    include: {
+      academicSemester: true,
+      academicDepartment: true,
+      academicFaculty: true,
+    },
   });
   return result;
 };
 
-const deleteFromDB = async (id: string): Promise<Student | null> => {
+const deleteFromDB = async (id: string): Promise<Student> => {
   const result = await prisma.student.delete({
     where: {
       id,

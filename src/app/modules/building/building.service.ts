@@ -1,10 +1,12 @@
-import { Building } from '@prisma/client';
+/* eslint-disable no-undef */
+import { Building, Prisma } from '@prisma/client';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import prisma from '../../../server';
-import { searchableBuildingItems } from './building.constant';
-import { BuildingFilterFields } from './building.interface';
+import { buildingSearchableFields } from './building.constants';
+import { IBuildingFilterRequest } from './building.interface';
+
 const insertIntoDB = async (data: Building): Promise<Building> => {
   const result = await prisma.building.create({
     data,
@@ -13,48 +15,45 @@ const insertIntoDB = async (data: Building): Promise<Building> => {
 };
 
 const getAllFromDB = async (
-  filters: BuildingFilterFields,
-  pages: IPaginationOptions
+  filters: IBuildingFilterRequest,
+  options: IPaginationOptions
 ): Promise<IGenericResponse<Building[]>> => {
-  const { searchTerm, ...otherFilters } = filters;
-  const { limit, page, skip, sortBy, sortOrder } =
-    paginationHelpers.calculatePagination(pages);
-  const andCondition = [];
+  const { page, limit, skip } = paginationHelpers.calculatePagination(options);
+  const { searchTerm } = filters;
+
+  const andConditons = [];
+
   if (searchTerm) {
-    andCondition.push({
-      OR: searchableBuildingItems.map(item => ({
-        [item]: {
+    andConditons.push({
+      OR: buildingSearchableFields.map(field => ({
+        [field]: {
           contains: searchTerm,
           mode: 'insensitive',
         },
       })),
     });
   }
-  if (Object.keys(otherFilters).length > 0) {
-    andCondition.push({
-      AND: Object.keys(otherFilters).map(key => ({
-        [key]: (otherFilters as any)[key],
-      })),
-    });
-  }
 
-  const whereCondition = andCondition.length > 0 ? { AND: andCondition } : {};
+  const whereConditons: Prisma.BuildingWhereInput =
+    andConditons.length > 0 ? { AND: andConditons } : {};
+
   const result = await prisma.building.findMany({
-    take: limit,
     skip,
-    where: whereCondition,
+    take: limit,
+    where: whereConditons,
     orderBy:
-      sortBy && sortOrder
+      options.sortBy && options.sortOrder
         ? {
-            [sortBy]: sortOrder,
+            [options.sortBy]: options.sortOrder,
           }
         : {
             createdAt: 'desc',
           },
   });
   const total = await prisma.building.count({
-    where: whereCondition,
+    where: whereConditons,
   });
+
   return {
     meta: {
       page,

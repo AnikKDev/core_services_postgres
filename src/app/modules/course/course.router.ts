@@ -5,7 +5,7 @@ import { CourseController } from './course.controller';
 
 const router = Router();
 router.post('/', CourseController.insertIntoDB);
-router.post('/:id/assign-faculties', CourseController.assignFaculties);
+router.post('/:id/assign-faculties', CourseController.assignFaculies);
 router.get('/:id', CourseController.getByIdFromDB);
 router.patch('/:id', CourseController.updateOneInDB);
 router.delete(

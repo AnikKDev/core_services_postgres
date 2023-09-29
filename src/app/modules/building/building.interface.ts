@@ -1,6 +1,3 @@
-export type BuildingFilterFields = {
-  searchTerm?: string;
-};
-export type BuildingSearchableFields = {
-  title?: string;
-};
+export type IBuildingFilterRequest = {
+    searchTerm?: string
+}

@@ -28,8 +28,9 @@ model AcademicSemester {
   // there will be many students under one academic semester !one to many
   students   Student[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  semesterRegistrations SemesterRegistration[]
 
   @@map("academic_semesters")
 }
@@ -177,4 +178,26 @@ model CourseFaculty {
 
   @@id([courseId, facultyId])
   @@map("course_faculties")
+}
+
+enum SemesterRegistrationStatus {
+  UPCOMING
+  ONGOING
+  ENDED
+}
+
+model SemesterRegistration {
+  id                 String                     @id @default(uuid())
+  startDate          DateTime
+  endDate            DateTime
+  status             SemesterRegistrationStatus @default(UPCOMING)
+  minCredit          Int                        @default(0)
+  maxCredit          Int                        @default(0)
+  createdAt          DateTime                   @default(now())
+  updatedAt          DateTime                   @updatedAt
+  academicSemesterId String
+
+  academicSemester AcademicSemester @relation(fields: [academicSemesterId], references: [id])
+
+  @@map("semester_registrations")
 }
