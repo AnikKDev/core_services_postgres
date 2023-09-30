@@ -62,8 +62,9 @@ model AcademicDepartment {
   // one department can have multiple facculties
   faculties         Faculty[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  offeredCourses OfferedCourse[]
 
   @@map("academic_department")
 }
@@ -155,6 +156,7 @@ model Course {
   preRequisite    CourseToPreRquisite[] @relation("CourseToPreRquisite")
   preRequisiteFor CourseToPreRquisite[] @relation("PrerquisiteToCourse")
   courseFaculties CourseFaculty[]
+  offeredCourses  OfferedCourse[]
 
   @@map("courses")
 }
@@ -197,7 +199,43 @@ model SemesterRegistration {
   updatedAt          DateTime                   @updatedAt
   academicSemesterId String
 
-  academicSemester AcademicSemester @relation(fields: [academicSemesterId], references: [id])
+  academicSemester      AcademicSemester       @relation(fields: [academicSemesterId], references: [id])
+  offeredCourses        OfferedCourse[]
+  offeredCourseSections OfferedCourseSection[]
 
   @@map("semester_registrations")
+}
+
+model OfferedCourse {
+  id                     String   @id @default(uuid())
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+  courseId               String
+  academicDepartmentId   String
+  semesterRegistrationId String
+
+  course             Course             @relation(fields: [courseId], references: [id])
+  academicDepartment AcademicDepartment @relation(fields: [academicDepartmentId], references: [id])
+
+  semesterRegistration  SemesterRegistration   @relation(fields: [semesterRegistrationId], references: [id])
+  offeredCourseSections OfferedCourseSection[]
+
+  @@map("offered_courses")
+}
+
+model OfferedCourseSection {
+  id                        String   @id @default(uuid())
+  title                     String
+  maxCapacity               Int
+  currentlyEnrolledStudents Int      @default(0)
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
+
+  offeredCourseId        String
+  semesterRegistrationId String
+
+  offeredCourse        OfferedCourse        @relation(fields: [offeredCourseId], references: [id])
+  semesterRegistration SemesterRegistration @relation(fields: [semesterRegistrationId], references: [id])
+
+  @@map("offered_course_sections")
 }
