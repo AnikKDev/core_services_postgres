@@ -154,6 +154,11 @@
             "date": 1696089907003,
             "name": "E:\\Web-Development\\advance-webdev\\SQL\\university-management-core-service-starter\\logs\\winston\\errors\\phu-2023-30-09-22-error.log",
             "hash": "328c2eeac6b17090ec1050625f416958d6d23588c7f700eb0215ca310a41c7c1"
+        },
+        {
+            "date": 1696138829949,
+            "name": "E:\\Web-Development\\advance-webdev\\SQL\\university-management-core-service-starter\\logs\\winston\\errors\\phu-2023-01-10-11-error.log",
+            "hash": "3a433d0cb3a7eea814387b29d91b7ddeac4ada1b54222ae78f4d389e4b0fb53e"
         }
     ],
     "hashType": "sha256"
